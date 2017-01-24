@@ -1,0 +1,23 @@
+machine:
+  java:
+    version: openjdk7
+dependencies:
+  cache_directories:
+    - "~/.grails/wrapper/2.5.5"
+  override:
+    - ./grailsw compile --refresh-dependencies
+    - ./grailsw clean
+test:
+  override:
+    - ./grailsw codenarc
+    - ./grailsw test-app -coverage
+  post:
+    - ./grailsw prod war
+    - ./grailsw stats
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - cp target/test-reports/TESTS-TestSuites.xml $CIRCLE_TEST_REPORTS/junit/
+    - cp -rf target/test-reports/cobertura $CIRCLE_ARTIFACTS
+    - mkdir -p $CIRCLE_ARTIFACTS/codenarc/
+    - cp target/CodeNarcReport.html $CIRCLE_ARTIFACTS/codenarc/
+    - mkdir -p $CIRCLE_ARTIFACTS/test-reports/
+    - cp -rf target/test-reports/html/* $CIRCLE_ARTIFACTS/test-reports/
