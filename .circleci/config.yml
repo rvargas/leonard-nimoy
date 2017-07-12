@@ -21,7 +21,7 @@ jobs:
     test:
       working_directory: ~/leonard-nimoy
       docker:
-        - image: circleci/java:openjdk7
+        - image: circleci/openjdk:8-jdk
       steps:
           - run:
               name: codenarc
@@ -44,7 +44,7 @@ jobs:
     compile:
       working_directory: ~/leonard-nimoy
       docker:
-        - image: circleci/java:openjdk7
+        - image: circleci/openjdk:8-jdk
       steps:
           - run:
               name: make war
