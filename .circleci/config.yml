@@ -1,0 +1,57 @@
+version: 2
+jobs:
+    build:
+      working_directory: ~/leonard-nimoy
+      docker:
+        - image: circleci/openjdk:8-jdk
+      steps:
+          - checkout
+          - run:
+            name: compile-dependencies
+            command: "~/.grails/wrapper/2.5.5"
+          - run:
+            name: clean
+            command: ./grailsw clean
+    test:
+      working_directory: ~/leonard-nimoy
+      docker:
+        - image: circleci/java:openjdk7
+      steps:
+          - run:
+            name: codenarc
+            command: ./grailsw codenarc
+          - run:
+            name: test
+            command: ./grailsw test-app -coverage
+          - run:
+            name: stats
+            command: ./grailsw stats
+          - store_artifacts:
+            path: target/test-reports/cobertura
+            prefix: coverage
+          - store_artifacts:
+            path: target/CodeNarcReport.html
+            prefix: codenarc
+          - store_artifacts:
+            path: target/test-reports/html/*
+            prefix: test
+    compile:
+      working_directory: ~/leonard-nimoy
+      docker:
+        - image: circleci/java:openjdk7
+      steps:
+          - run:
+            name: make war
+            command: ./grailsw prod war
+
+workflows:
+  version: 2
+  build_and_test_and_compile:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - compile:
+          requires:
+            - test
