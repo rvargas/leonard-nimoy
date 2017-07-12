@@ -6,12 +6,17 @@ jobs:
         - image: circleci/openjdk:8-jdk
       steps:
           - checkout
+          - restore_cache
           - run:
             name: compile-dependencies
-            command: "~/.grails/wrapper/2.5.5"
+            command: ./grailsw compile --refresh-dependencies
           - run:
             name: clean
             command: ./grailsw clean
+          - save_cache:
+            key: grails
+            paths:
+              - ~/.grails/wrapper/2.5.5
     test:
       working_directory: ~/leonard-nimoy
       docker:
