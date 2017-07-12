@@ -8,46 +8,46 @@ jobs:
           - checkout
           - restore_cache
           - run:
-            name: compile-dependencies
-            command: ./grailsw compile --refresh-dependencies
+              name: compile-dependencies
+              command: ./grailsw compile --refresh-dependencies
           - run:
-            name: clean
-            command: ./grailsw clean
+              name: clean
+              command: ./grailsw clean
           - save_cache:
-            key: grails
-            paths:
-              - ~/.grails/wrapper/2.5.5
+              key: grails
+              paths:
+                - ~/.grails/wrapper/2.5.5
     test:
       working_directory: ~/leonard-nimoy
       docker:
         - image: circleci/java:openjdk7
       steps:
           - run:
-            name: codenarc
-            command: ./grailsw codenarc
+              name: codenarc
+              command: ./grailsw codenarc
           - run:
-            name: test
-            command: ./grailsw test-app -coverage
+              name: test
+              command: ./grailsw test-app -coverage
           - run:
-            name: stats
-            command: ./grailsw stats
+              name: stats
+              command: ./grailsw stats
           - store_artifacts:
-            path: target/test-reports/cobertura
-            prefix: coverage
+              path: target/test-reports/cobertura
+              prefix: coverage
           - store_artifacts:
-            path: target/CodeNarcReport.html
-            prefix: codenarc
+              path: target/CodeNarcReport.html
+              prefix: codenarc
           - store_artifacts:
-            path: target/test-reports/html/*
-            prefix: test
+              path: target/test-reports/html/*
+              prefix: test
     compile:
       working_directory: ~/leonard-nimoy
       docker:
         - image: circleci/java:openjdk7
       steps:
           - run:
-            name: make war
-            command: ./grailsw prod war
+              name: make war
+              command: ./grailsw prod war
 
 workflows:
   version: 2
